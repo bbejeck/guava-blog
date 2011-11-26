@@ -54,7 +54,7 @@ public class FuturesTest extends FuturesTestBase {
             }
         };
 
-        ListenableFuture<List<String>> indexSearch = luceneSearcher.searchAsync("(firstName:martin AND lastName:hess)");
+        ListenableFuture<List<String>> indexSearch = luceneSearcher.searchAsync("(+firstName:martin +lastName:hess)");
 
         ListenableFuture<List<Map<String, String>>> results = Futures.chain(indexSearch, queryFunction);
         List<Map<String, String>> persons = results.get(1, TimeUnit.SECONDS);
