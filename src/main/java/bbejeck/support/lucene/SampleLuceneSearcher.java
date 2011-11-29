@@ -49,7 +49,7 @@ public class SampleLuceneSearcher extends BaseSample {
         return results;
     }
 
-    public ListenableFuture<List<String>> searchAsync(final String query) throws Exception {
+    public ListenableFuture<List<String>> searchAsync(final String query)  {
         return executorService.submit(new Callable<List<String>>() {
             @Override
             public List<String> call() throws Exception {

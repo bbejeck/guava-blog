@@ -2,14 +2,12 @@ package bbejeck.guava.futures;
 
 import bbejeck.support.model.Person;
 import com.google.common.base.Function;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -29,40 +27,66 @@ public class FuturesTest extends FuturesTestBase {
     private int numberTasks;
     private CountDownLatch startSignal;
     private CountDownLatch doneSignal;
-    private ListeningExecutorService testExecutorService;
+    private ListeningExecutorService executorService;
 
     @Before
     public void setUp() throws Exception {
         numberTasks = 5;
         startSignal = new CountDownLatch(1);
         doneSignal = new CountDownLatch(numberTasks);
-        testExecutorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+        executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
     }
 
     @After
     public void tearDown() {
-        testExecutorService.shutdownNow();
+        executorService.shutdownNow();
     }
 
-    @Test
-    public void testChainSearch() throws Exception {
 
-        Function<List<String>, ListenableFuture<List<Map<String, String>>>> queryFunction = new Function<List<String>, ListenableFuture<List<Map<String, String>>>>() {
+
+    @Test
+    public void testChainSearchSettableFuture() throws Exception {
+
+        Function<List<String>, ListenableFuture<List<Person>>> queryFunction = new Function<List<String>, ListenableFuture<List<Person>>>() {
             @Override
-            public ListenableFuture<List<Map<String, String>>> apply(final List<String> ids) {
-                return dataService.getPersonDataByIdAsync(ids);
+            public ListenableFuture<List<Person>> apply(final List<String> ids) {
+                SettableFuture<List<Person>> sf = SettableFuture.create();
+                 sf.set(dataService.getPersonsById(ids));
+                return sf;
             }
         };
 
-        ListenableFuture<List<String>> indexSearch = luceneSearcher.searchAsync("(+firstName:martin +lastName:hess)");
+        ListenableFuture<List<String>> indexSearch = luceneSearcher.searchAsync("firstName:martin");
 
-        ListenableFuture<List<Map<String, String>>> results = Futures.chain(indexSearch, queryFunction);
-        List<Map<String, String>> persons = results.get(1, TimeUnit.SECONDS);
-        assertThat(persons.size(), is(1));
-        Map<String, String> person = persons.get(0);
-        assertThat(person.get("first_name"), is("Martin"));
-        assertThat(person.get("last_name"), is("Hess"));
+        ListenableFuture<List<Person>> results = Futures.chain(indexSearch, queryFunction);
+        List<Person> persons = results.get(1, TimeUnit.SECONDS);
+        assertThat(persons.size(), is(74));
+        for(Person person  : persons){
+            assertThat(person.firstName,is("Martin"));
+        }
     }
+
+    @Test
+    public void testChainSearchFunction() throws Exception {
+
+
+        Function<List<String>, ListenableFuture<List<Person>>> queryFunction = new Function<List<String>, ListenableFuture<List<Person>>>() {
+            @Override
+            public ListenableFuture<List<Person>> apply(final List<String> ids) {
+                 return dataService.getPersonsByIdAsync(ids);
+            }
+        };
+
+        ListenableFuture<List<String>> indexSearch = luceneSearcher.searchAsync("firstName:martin");
+
+        ListenableFuture<List<Person>> results = Futures.chain(indexSearch, queryFunction,executorService);
+        List<Person> persons = results.get(1, TimeUnit.SECONDS);
+        assertThat(persons.size(), is(74));
+        for(Person person  : persons){
+            assertThat(person.firstName,is("Martin"));
+        }
+    }
+
 
     @Test
     public void testTransformSearch() throws Exception {
@@ -75,7 +99,7 @@ public class FuturesTest extends FuturesTestBase {
         };
 
         ListenableFuture<List<String>> indexSearch = luceneSearcher.searchAsync("firstName:martin");
-        ListenableFuture<List<Person>> transformedResults = Futures.transform(indexSearch, transformSearchResults);
+        ListenableFuture<List<Person>> transformedResults = Futures.transform(indexSearch, transformSearchResults,executorService);
 
         List<Person> persons = transformedResults.get(1, TimeUnit.SECONDS);
         int expectedSize = 74;
@@ -87,11 +111,11 @@ public class FuturesTest extends FuturesTestBase {
 
     @Test
     public void allAsListSuccess() throws Exception {
-        ListenableFuture<List<Person>> lf1 = getFuture("martin", false);
-        ListenableFuture<List<Person>> lf2 = getFuture("bob", false);
-        ListenableFuture<List<Person>> lf3 = getFuture("emily", false);
-        ListenableFuture<List<Person>> lf4 = getFuture("mona", false);
-        ListenableFuture<List<Person>> lf5 = getFuture("tom", false);
+        ListenableFuture<List<Person>> lf1 = getPersonsByFirstNameFuture("martin", false);
+        ListenableFuture<List<Person>> lf2 = getPersonsByFirstNameFuture("bob", false);
+        ListenableFuture<List<Person>> lf3 = getPersonsByFirstNameFuture("emily", false);
+        ListenableFuture<List<Person>> lf4 = getPersonsByFirstNameFuture("mona", false);
+        ListenableFuture<List<Person>> lf5 = getPersonsByFirstNameFuture("tom", false);
 
         ListenableFuture<List<List<Person>>> lfResults = Futures.allAsList(lf1, lf2, lf3, lf4, lf5);
         startSignal.countDown();
@@ -104,11 +128,11 @@ public class FuturesTest extends FuturesTestBase {
 
     @Test(expected = ExecutionException.class)
     public void allAsListSuccessOneFailure() throws Exception {
-        ListenableFuture<List<Person>> lf1 = getFuture("martin", false);
-        ListenableFuture<List<Person>> lf2 = getFuture("bob", false);
-        ListenableFuture<List<Person>> lf3 = getFuture("emily", true);
-        ListenableFuture<List<Person>> lf4 = getFuture("mona", false);
-        ListenableFuture<List<Person>> lf5 = getFuture("tom", false);
+        ListenableFuture<List<Person>> lf1 = getPersonsByFirstNameFuture("martin", false);
+        ListenableFuture<List<Person>> lf2 = getPersonsByFirstNameFuture("bob", false);
+        ListenableFuture<List<Person>> lf3 = getPersonsByFirstNameFuture("emily", true);
+        ListenableFuture<List<Person>> lf4 = getPersonsByFirstNameFuture("mona", false);
+        ListenableFuture<List<Person>> lf5 = getPersonsByFirstNameFuture("tom", false);
 
         ListenableFuture<List<List<Person>>> lfResults = Futures.allAsList(lf1, lf2, lf3, lf4, lf5);
         startSignal.countDown();
@@ -118,11 +142,11 @@ public class FuturesTest extends FuturesTestBase {
 
     @Test
     public void successfulAsListSuccessOneFailure() throws Exception {
-        ListenableFuture<List<Person>> lf1 = getFuture("martin", true);
-        ListenableFuture<List<Person>> lf2 = getFuture("bob", false);
-        ListenableFuture<List<Person>> lf3 = getFuture("emily", true);
-        ListenableFuture<List<Person>> lf4 = getFuture("mona", false);
-        ListenableFuture<List<Person>> lf5 = getFuture("tom", false);
+        ListenableFuture<List<Person>> lf1 = getPersonsByFirstNameFuture("martin", true);
+        ListenableFuture<List<Person>> lf2 = getPersonsByFirstNameFuture("bob", false);
+        ListenableFuture<List<Person>> lf3 = getPersonsByFirstNameFuture("emily", true);
+        ListenableFuture<List<Person>> lf4 = getPersonsByFirstNameFuture("mona", false);
+        ListenableFuture<List<Person>> lf5 = getPersonsByFirstNameFuture("tom", false);
 
         ListenableFuture<List<List<Person>>> lfResults = Futures.successfulAsList(lf1, lf2, lf3, lf4, lf5);
         startSignal.countDown();
@@ -140,9 +164,8 @@ public class FuturesTest extends FuturesTestBase {
         assertThat(listOfPersonLists.get(4).size() > 0,is(true));
     }
 
-
-    private ListenableFuture<List<Person>> getFuture(final String firstName, final boolean error) {
-        return testExecutorService.submit(new Callable<List<Person>>() {
+    private ListenableFuture<List<Person>> getPersonsByFirstNameFuture(final String firstName, final boolean error) {
+        return executorService.submit(new Callable<List<Person>>() {
             @Override
             public List<Person> call() throws Exception {
                 startSignal.await();
@@ -154,5 +177,14 @@ public class FuturesTest extends FuturesTestBase {
                 return persons;
             }
         });
+    }
+
+    private Callable<String> getSimpleCallable(final String label) {
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return label;
+            }
+        };
     }
 }
