@@ -8,6 +8,8 @@ import com.google.common.cache.CacheLoader;
 import javax.security.auth.callback.CallbackHandler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,10 +52,14 @@ public class CacheExample {
     public static void main(String[] args) throws Exception {
         CacheExample cacheExample = new CacheExample();
         Cache<String,List<String>> cache = cacheExample.buildCache();
+        Map<String,List<String>> map = cache.asMap();
+        System.out.println(map.get("bogus"));
+
         cache.get("foo");
         cache.get("foo");
         cache.get("foo");
-        cache.get("foo");
+        cache.get("bar");
+        System.out.println("cache = " + cache.get("foo"));
         Thread.sleep(8000);
         cache.get("foo");
     }
