@@ -7,9 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -22,7 +20,7 @@ import static org.junit.Assert.*;
  * Time: 2:11 PM
  */
 
-public class FuturesTest extends FuturesTestBase {
+public class FuturesTest extends SearchingTestBase {
 
     private int numberTasks;
     private CountDownLatch startSignal;
