@@ -4,6 +4,7 @@ import bbejeck.support.BaseSample;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -26,12 +27,11 @@ import java.util.concurrent.Callable;
 public class SampleLuceneSearcher extends BaseSample {
 
     private IndexSearcher searcher;
-   // private QueryParser queryParser;
     private final int MAX_RESULTS = 1000;
 
     public SampleLuceneSearcher(RAMDirectory ramDirectory) {
         try {
-            searcher = new IndexSearcher(ramDirectory, true);
+            searcher = new IndexSearcher(IndexReader.open(ramDirectory, true));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +39,7 @@ public class SampleLuceneSearcher extends BaseSample {
 
     public List<String> search(String query) throws Exception {
         List<String> results = new ArrayList<String>();
-        QueryParser queryParser = new QueryParser(Version.LUCENE_34, null, new StandardAnalyzer(Version.LUCENE_34));
+        QueryParser queryParser = new QueryParser(Version.LUCENE_35, null, new StandardAnalyzer(Version.LUCENE_35));
         Query q = queryParser.parse(query);
         TopDocs topDocs = searcher.search(q, MAX_RESULTS);
         for (ScoreDoc sd : topDocs.scoreDocs) {
