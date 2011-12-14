@@ -10,8 +10,10 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +51,7 @@ public class FuturesTest extends SearchingTestBase {
             @Override
             public ListenableFuture<List<Person>> apply(final List<String> ids) {
                 SettableFuture<List<Person>> sf = SettableFuture.create();
-                 sf.set(dataService.getPersonsById(ids));
+                 sf.set(dbService.getPersonsById(ids));
                 return sf;
             }
         };
@@ -71,7 +73,7 @@ public class FuturesTest extends SearchingTestBase {
         Function<List<String>, ListenableFuture<List<Person>>> queryFunction = new Function<List<String>, ListenableFuture<List<Person>>>() {
             @Override
             public ListenableFuture<List<Person>> apply(final List<String> ids) {
-                 return dataService.getPersonsByIdAsync(ids);
+                 return dbService.getPersonsByIdAsync(ids);
             }
         };
 
@@ -92,7 +94,7 @@ public class FuturesTest extends SearchingTestBase {
         Function<List<String>, List<Person>> transformSearchResults = new Function<List<String>, List<Person>>() {
             @Override
             public List<Person> apply(List<String> ids) {
-                return dataService.getPersonsById(ids);
+                return dbService.getPersonsById(ids);
             }
         };
 
@@ -171,7 +173,7 @@ public class FuturesTest extends SearchingTestBase {
                     throw new RuntimeException("Ooops!");
                 }
                 List<String> ids = luceneSearcher.search("firstName:" + firstName);
-                List<Person> persons = dataService.getPersonsById(ids);
+                List<Person> persons = dbService.getPersonsById(ids);
                 return persons;
             }
         });

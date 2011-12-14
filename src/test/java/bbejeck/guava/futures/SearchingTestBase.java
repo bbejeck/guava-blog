@@ -1,6 +1,6 @@
 package bbejeck.guava.futures;
 
-import bbejeck.support.dataservice.SampleDataService;
+import bbejeck.support.database.SampleDBService;
 import bbejeck.support.lucene.SampleLuceneIndexBuilder;
 import bbejeck.support.lucene.SampleLuceneSearcher;
 import org.apache.lucene.store.RAMDirectory;
@@ -31,7 +31,7 @@ public abstract class SearchingTestBase {
     private static Server dbServer;
     private static SampleLuceneIndexBuilder luceneIndexBuilder;
     protected static SampleLuceneSearcher luceneSearcher;
-    protected static SampleDataService dataService;
+    protected static SampleDBService dbService;
 
     @BeforeClass
     public static void setUpBeforeAllTests() throws Exception {
@@ -39,7 +39,7 @@ public abstract class SearchingTestBase {
         setUpIndex();
         createConnectionPool();
         populateDb();
-        dataService = new SampleDataService(connectionPool);
+        dbService = new SampleDBService(connectionPool);
     }
 
     @AfterClass
@@ -47,7 +47,7 @@ public abstract class SearchingTestBase {
         stopH2();
         closeConnectionPool();
         luceneSearcher.shutDown();
-        dataService.shutDown();
+        dbService.shutDown();
     }
 
     private static void populateDb() throws SQLException {
