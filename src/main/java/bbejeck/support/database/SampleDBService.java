@@ -1,4 +1,4 @@
-package bbejeck.support.dataservice;
+package bbejeck.support.database;
 
 import bbejeck.support.BaseSample;
 import bbejeck.support.model.Person;
@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
  * Time: 10:51 PM
  */
 
-public class SampleDataService extends BaseSample {
+public class SampleDBService extends BaseSample {
 
     private JdbcConnectionPool connectionPool;
     private String query = "Select first_name,last_name,address,email from person where id in(";
@@ -31,7 +31,7 @@ public class SampleDataService extends BaseSample {
     private static final String ADDRESS = "address";
     private static final String EMAIL = "email";
 
-    public SampleDataService(JdbcConnectionPool connectionPool) {
+    public SampleDBService(JdbcConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
