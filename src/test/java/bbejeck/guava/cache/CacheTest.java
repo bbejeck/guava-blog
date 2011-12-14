@@ -61,11 +61,29 @@ public class CacheTest extends SearchingTestBase {
         assertThat(stats.hitCount(), is(99l));
         assertThat(stats.loadCount(), is(1l));
         assertThat(stats.missCount(), is(1l));
-        assertThat(stats.requestCount(),is(100l));
+        assertThat(stats.requestCount(), is(100l));
         assertThat(personList.size(), is(620));
         for (Person person : personList) {
             assertThat(person.lastName, is("Smith"));
         }
+    }
+
+    @Test
+    public void testCacheSizeLimit() throws Exception {
+        PersonListRemovalListener removalListener = new PersonListRemovalListener();
+        Cache<String, List<Person>> cache = CacheBuilder.newBuilder()
+                .maximumSize(2)
+                .removalListener(removalListener)
+                .build(CacheLoader.from(getFunction()));
+        String queryKey = "lastName:smith";
+        String queryKeyII = "firstName:bob";
+        String queryKeyIII = "firstName:joe";
+
+        cache.get(queryKey);
+        cache.get(queryKeyII);
+        cache.get(queryKeyIII);
+        assertThat(removalListener.getRemovalNotification().getKey(),is(queryKeyII));
+        assertThat(removalListener.getRemovalNotification().getCause(),is(RemovalCause.SIZE));
     }
 
 
