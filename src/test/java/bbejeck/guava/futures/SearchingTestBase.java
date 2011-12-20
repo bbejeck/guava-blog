@@ -26,7 +26,7 @@ public abstract class SearchingTestBase {
 
     private static final String dbUrl = "jdbc:h2:mem:test";
     private static final String insertSql = " CREATE TABLE PERSON(FIRST_NAME VARCHAR(255), LAST_NAME VARCHAR(255)," +
-            " ADDRESS VARCHAR(255), EMAIL VARCHAR(255),ID INT PRIMARY KEY) AS SELECT * FROM CSVREAD('src/main/resources/names.csv')";
+            " ADDRESS VARCHAR(255), EMAIL VARCHAR(255),ID INT PRIMARY KEY) AS SELECT * FROM CSVREAD('classpath:names.csv')";
     protected static JdbcConnectionPool connectionPool;
     private static Server dbServer;
     private static SampleLuceneIndexBuilder luceneIndexBuilder;
