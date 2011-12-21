@@ -14,10 +14,17 @@ import java.io.IOException;
 
 public class SampleLuceneIndexBuilder {
 
+    private String namesFile = "src/main/resources/names.csv";
+
+    public SampleLuceneIndexBuilder() {
+    }
+
+    public SampleLuceneIndexBuilder(String namesFile) {
+        this.namesFile = namesFile;
+    }
 
     public RAMDirectory buildIndex() throws IOException {
         RAMDirectory ramDirectory = new RAMDirectory();
-        String namesFile = "src/main/resources/names.csv";
         Document doc = new Document();
         Field[] fields = new Field[]{new Field("firstName", "", Field.Store.NO, Field.Index.ANALYZED_NO_NORMS),
                 new Field("lastName", "", Field.Store.NO, Field.Index.ANALYZED_NO_NORMS),
@@ -36,7 +43,6 @@ public class SampleLuceneIndexBuilder {
             setFieldData(personData, fields);
             indexWriter.addDocument(doc);
         }
-        indexWriter.optimize();
         indexWriter.close();
         return ramDirectory;
     }
