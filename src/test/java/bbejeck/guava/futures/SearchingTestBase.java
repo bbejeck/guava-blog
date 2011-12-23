@@ -59,7 +59,8 @@ public abstract class SearchingTestBase {
     }
 
     private static void setUpIndex() throws IOException {
-        luceneIndexBuilder = new SampleLuceneIndexBuilder();
+        String filePath = System.getProperty("names","src/main/resources/names.csv");
+        luceneIndexBuilder = new SampleLuceneIndexBuilder(filePath);
         RAMDirectory ramDirectory = luceneIndexBuilder.buildIndex();
         luceneSearcher = new SampleLuceneSearcher(ramDirectory);
     }
