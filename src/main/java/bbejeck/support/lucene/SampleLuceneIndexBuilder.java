@@ -32,7 +32,7 @@ public class SampleLuceneIndexBuilder {
 
         BufferedReader reader = new BufferedReader(new FileReader(namesFile));
 
-        IndexWriter indexWriter = new IndexWriter(ramDirectory, new IndexWriterConfig(Version.LUCENE_35, new StandardAnalyzer(Version.LUCENE_34)));
+        IndexWriter indexWriter = new IndexWriter(ramDirectory, new IndexWriterConfig(Version.LUCENE_35, new StandardAnalyzer(Version.LUCENE_35)));
 
         String line;
         while ((line = reader.readLine()) != null) {
