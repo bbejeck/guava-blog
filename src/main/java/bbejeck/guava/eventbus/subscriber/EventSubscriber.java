@@ -12,12 +12,12 @@ import java.util.List;
  * Time: 10:04 PM
  */
 
-public abstract class BaseEventSubscriber<T> {
+public abstract class EventSubscriber<T> {
 
     EventBus eventBus;
     List<T> events = new ArrayList<T>();
 
-    public BaseEventSubscriber(EventBus eventBus) {
+    public EventSubscriber(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.register(this);
     }

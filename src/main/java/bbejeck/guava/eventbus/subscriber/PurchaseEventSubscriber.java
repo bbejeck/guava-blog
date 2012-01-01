@@ -11,7 +11,7 @@ import com.google.common.eventbus.Subscribe;
  * Time: 10:39 PM
  */
 
-public class PurchaseEventSubscriber extends BaseEventSubscriber<PurchaseEvent> {
+public class PurchaseEventSubscriber extends EventSubscriber<PurchaseEvent> {
 
     public PurchaseEventSubscriber(EventBus eventBus) {
         super(eventBus);
