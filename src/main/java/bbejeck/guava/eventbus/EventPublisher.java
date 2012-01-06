@@ -2,6 +2,8 @@ package bbejeck.guava.eventbus;
 
 import bbejeck.guava.eventbus.events.CashPurchaseEvent;
 import bbejeck.guava.eventbus.events.CreditPurchaseEvent;
+import bbejeck.guava.eventbus.events.NoSubscriberEvent;
+import bbejeck.guava.eventbus.events.SimpleEvent;
 import com.google.common.eventbus.EventBus;
 
 /**
@@ -25,6 +27,14 @@ public class EventPublisher {
 
     public void createCreditPurchaseEvent(String item, String ccNumber, long amount) {
         eventBus.post(new CreditPurchaseEvent(amount, ccNumber, item));
+    }
+
+    public void createSimpleEvent(String eventName) {
+        eventBus.post(new SimpleEvent(eventName));
+    }
+
+    public void createNoSubscribedEvent() {
+        eventBus.post(new NoSubscriberEvent());
     }
 
 }

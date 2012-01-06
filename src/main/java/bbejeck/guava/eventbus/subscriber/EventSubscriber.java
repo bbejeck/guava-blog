@@ -14,12 +14,10 @@ import java.util.List;
 
 public abstract class EventSubscriber<T> {
 
-    EventBus eventBus;
     List<T> events = new ArrayList<T>();
 
     public EventSubscriber(EventBus eventBus) {
-        this.eventBus = eventBus;
-        this.eventBus.register(this);
+        eventBus.register(this);
     }
 
     public abstract void handleEvent(T event);

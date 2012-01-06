@@ -25,4 +25,12 @@ public class CreditPurchaseEvent extends PurchaseEvent {
     public String getItem() {
         return item;
     }
+
+    @Override
+    public String toString() {
+        return "CreditPurchaseEvent{" +
+                "creditCardNumber='" + creditCardNumber + '\'' +
+                ", item='" + item + '\'' +
+                "} " + super.toString();
+    }
 }

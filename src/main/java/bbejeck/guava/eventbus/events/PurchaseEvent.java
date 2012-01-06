@@ -17,4 +17,11 @@ public abstract class PurchaseEvent {
     public long getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "PurchaseEvent{" +
+                "amount=" + amount +
+                '}';
+    }
 }

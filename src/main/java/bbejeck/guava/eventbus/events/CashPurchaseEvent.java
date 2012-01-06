@@ -19,4 +19,11 @@ public class CashPurchaseEvent extends PurchaseEvent {
     public String getItem() {
         return item;
     }
+
+    @Override
+    public String toString() {
+        return "CashPurchaseEvent{" +
+                "item='" + item + '\'' +
+                "} " + super.toString();
+    }
 }

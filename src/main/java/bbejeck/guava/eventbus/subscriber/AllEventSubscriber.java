@@ -1,27 +1,23 @@
 package bbejeck.guava.eventbus.subscriber;
 
-import bbejeck.guava.eventbus.events.PurchaseEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 /**
  * Created by IntelliJ IDEA.
  * User: bbejeck
- * Date: 12/31/11
- * Time: 10:39 PM
+ * Date: 1/4/12
+ * Time: 11:04 PM
  */
+public class AllEventSubscriber extends EventSubscriber<Object> {
 
-public class PurchaseEventSubscriber extends EventSubscriber<PurchaseEvent> {
-
-    public PurchaseEventSubscriber(EventBus eventBus) {
+    public AllEventSubscriber(EventBus eventBus) {
         super(eventBus);
     }
 
     @Override
     @Subscribe
-    public void handleEvent(PurchaseEvent event) {
+    public void handleEvent(Object event) {
         events.add(event);
     }
-
-
 }
