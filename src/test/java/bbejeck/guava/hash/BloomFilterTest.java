@@ -1,7 +1,8 @@
 package bbejeck.guava.hash;
 
 import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
+import com.google.common.hash.Funnel;
+import com.google.common.hash.Sink;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 public class BloomFilterTest {
 
-    private BloomFilter<byte[]> bloomFilter;
+    private BloomFilter<BigInteger> bloomFilter;
     private Random random;
     private int numBits;
     private List<BigInteger> stored;
@@ -43,7 +44,7 @@ public class BloomFilterTest {
         setUpBloomFilter(stored.size());
         int falsePositiveCount = 0;
         for (BigInteger bigInteger : notStored) {
-            boolean mightContain = bloomFilter.mightContain(bigInteger.toByteArray());
+            boolean mightContain = bloomFilter.mightContain(bigInteger);
             boolean isStored = stored.contains(bigInteger);
             if (mightContain && !isStored) {
                 falsePositiveCount++;
@@ -57,7 +58,7 @@ public class BloomFilterTest {
         setUpBloomFilter(50);
         int falsePositiveCount = 0;
         for (BigInteger bigInteger : notStored) {
-            boolean mightContain = bloomFilter.mightContain(bigInteger.toByteArray());
+            boolean mightContain = bloomFilter.mightContain(bigInteger);
             boolean isStored = stored.contains(bigInteger);
             if (mightContain && !isStored) {
                 falsePositiveCount++;
@@ -67,7 +68,7 @@ public class BloomFilterTest {
     }
 
     private void setUpBloomFilter(int numInsertions) {
-        bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), numInsertions);
+        bloomFilter = BloomFilter.create(new BigIntegerFunnel(), numInsertions);
         addStoredBigIntegersToBloomFilter();
     }
 
@@ -77,13 +78,20 @@ public class BloomFilterTest {
 
     private void addStoredBigIntegersToBloomFilter() {
         for (BigInteger bigInteger : stored) {
-            bloomFilter.put(bigInteger.toByteArray());
+            bloomFilter.put(bigInteger);
         }
     }
 
     private void loadBigIntList(List<BigInteger> list, int count) {
         for (int i = 0; i < count; i++) {
             list.add(getRandomBigInteger());
+        }
+    }
+
+    private class BigIntegerFunnel implements Funnel<BigInteger> {
+        @Override
+        public void funnel(BigInteger from, Sink into) {
+            into.putBytes(from.toByteArray());
         }
     }
 
