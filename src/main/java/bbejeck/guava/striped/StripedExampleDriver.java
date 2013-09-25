@@ -53,7 +53,7 @@ public class StripedExampleDriver {
                     if (isStriped) {
                         worker.stripedConcurrentAccess(value);
                     } else {
-                        worker.nonStripedConcurrenAccess(value);
+                        worker.nonStripedConcurrentAccess(value);
                     }
                     endSignal.countDown();
                     return null;
