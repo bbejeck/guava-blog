@@ -28,7 +28,7 @@ public class ConcurrentWorker {
         }
     }
 
-    public void nonStripedConcurrenAccess(String url) throws Exception {
+    public void nonStripedConcurrentAccess(String url) throws Exception {
         semaphore.acquire();
         try {
             //Access restricted resource here
