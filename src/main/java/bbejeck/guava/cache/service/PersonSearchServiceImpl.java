@@ -6,6 +6,7 @@ import bbejeck.support.model.Person;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PersonSearchServiceImpl implements SearchService<List<Person>> {
 
-    protected Cache<String, List<Person>> cache;
+    protected LoadingCache<String, List<Person>> cache;
     private SampleLuceneSearcher luceneSearcher;
     private SampleDBService dbService;
 

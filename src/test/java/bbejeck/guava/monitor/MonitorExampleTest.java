@@ -112,11 +112,12 @@ public class MonitorExampleTest {
         completedCount = monitorExample.getTaskDoneCounter();
         assertThat(completedCount, is(expectedCompletedCount));
     }
-     /*
-       Artificially setting the guard to false after 3 threads complete to demonstrate that
-       the remaining 7 threads will wait until the guard condition returns true again and will
-       enter the monitor.
-      */
+
+    /*
+      Artificially setting the guard to false after 3 threads complete to demonstrate that
+      the remaining 7 threads will wait until the guard condition returns true again and will
+      enter the monitor.
+     */
     @Test
     public void testDemoEnterWhenAllTasksCompleteEvenWhenConditionChanges() throws Exception {
         monitorExample.setCondition(true);
@@ -130,7 +131,6 @@ public class MonitorExampleTest {
                     public Integer call() {
                         int initialCompletedTasks = monitorExample.getTaskDoneCounter();
                         monitorExample.setCondition(true);
-                        monitorExample.reEvaluateGuardCondition();
                         return initialCompletedTasks;
 
                     }

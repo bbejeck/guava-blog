@@ -91,8 +91,15 @@ public class EventBusTest {
     @Test
     public void testUnregisterForEvents() {
         eventBus.unregister(cashPurchaseEventSubscriber);
+        CashPurchaseEventSubscriber cashPurchaseEventSubscriber1 = new CashPurchaseEventSubscriber(eventBus);
+        CashPurchaseEventSubscriber cashPurchaseEventSubscriber2 = new CashPurchaseEventSubscriber(eventBus);
+        eventBus.register(cashPurchaseEventSubscriber1);
+        eventBus.register(cashPurchaseEventSubscriber2);
+
         generateCashPurchaseEvent();
         assertThat(cashPurchaseEventSubscriber.getHandledEvents().size(), is(0));
+        assertThat(cashPurchaseEventSubscriber1.getHandledEvents().size(), is(1));
+        assertThat(cashPurchaseEventSubscriber2.getHandledEvents().size(), is(1));
     }
 
     /**

@@ -27,8 +27,9 @@ public class CacheTest extends SearchingTestBase {
 
         PersonListRemovalListener removalListener = new PersonListRemovalListener();
 
-        Cache<String, List<Person>> cache = CacheBuilder.newBuilder().expireAfterWrite(500, TimeUnit.MILLISECONDS)
+        LoadingCache<String, List<Person>> cache = CacheBuilder.newBuilder().expireAfterWrite(500, TimeUnit.MILLISECONDS)
                 .removalListener(removalListener)
+                .recordStats()
                 .build(getCacheLoader());
 
         String queryKey = "firstName:bob";
@@ -51,7 +52,7 @@ public class CacheTest extends SearchingTestBase {
 
     @Test
     public void testCacheLoadedAfterFirstRequestThenCached() throws Exception {
-        Cache<String, List<Person>> cache = CacheBuilder.newBuilder().build(CacheLoader.from(getFunction()));
+        LoadingCache<String, List<Person>> cache = CacheBuilder.newBuilder().recordStats().build(CacheLoader.from(getFunction()));
         String queryKey = "lastName:smith";
         List<Person> personList = null;
         for (int i = 0; i < 100; i++) {
@@ -71,7 +72,7 @@ public class CacheTest extends SearchingTestBase {
     @Test
     public void testCacheSizeLimit() throws Exception {
         PersonListRemovalListener removalListener = new PersonListRemovalListener();
-        Cache<String, List<Person>> cache = CacheBuilder.newBuilder()
+        LoadingCache<String, List<Person>> cache = CacheBuilder.newBuilder()
                 .maximumSize(2)
                 .removalListener(removalListener)
                 .build(CacheLoader.from(getFunction()));
@@ -82,7 +83,7 @@ public class CacheTest extends SearchingTestBase {
         cache.get(queryKey);
         cache.get(queryKeyII);
         cache.get(queryKeyIII);
-        assertThat(removalListener.getRemovalNotification().getKey(),is(queryKeyII));
+        assertThat(removalListener.getRemovalNotification().getKey(), is(queryKey));
         assertThat(removalListener.getRemovalNotification().getCause(),is(RemovalCause.SIZE));
     }
 

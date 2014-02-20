@@ -66,12 +66,8 @@ public class MonitorExample {
         }
     }
 
-    private void simulatedWork() throws InterruptedException{
+    private void simulatedWork() throws InterruptedException {
         Thread.sleep(250);
-    }
-
-    public void reEvaluateGuardCondition() {
-        monitor.reevaluateGuards();
     }
 
     public int getStopTaskCount() {

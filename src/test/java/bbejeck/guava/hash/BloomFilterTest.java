@@ -2,7 +2,7 @@ package bbejeck.guava.hash;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;
-import com.google.common.hash.Sink;
+import com.google.common.hash.PrimitiveSink;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +17,6 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by IntelliJ IDEA.
  * User: bbejeck
- * Date: 3/20/12
- * Time: 9:46 PM
  */
 
 public class BloomFilterTest {
@@ -90,7 +88,7 @@ public class BloomFilterTest {
 
     private class BigIntegerFunnel implements Funnel<BigInteger> {
         @Override
-        public void funnel(BigInteger from, Sink into) {
+        public void funnel(BigInteger from, PrimitiveSink into) {
             into.putBytes(from.toByteArray());
         }
     }
