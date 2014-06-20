@@ -4,4 +4,4 @@ Code for Monitor examples can be found in bbejeck.guava.monitor in the test dire
 
 Code for Futures and ListenableFutures can be found in bbejeck.guava.futures in the test directory
 
-The package bbejeck.support cantains all the infrastructure code to facilitate the examples
+The package bbejeck.support contains all the infrastructure code to facilitate the examples
