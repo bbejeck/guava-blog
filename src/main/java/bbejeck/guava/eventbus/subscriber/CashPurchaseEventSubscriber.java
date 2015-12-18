@@ -1,7 +1,6 @@
 package bbejeck.guava.eventbus.subscriber;
 
 import bbejeck.guava.eventbus.events.CashPurchaseEvent;
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 /**
@@ -13,13 +12,10 @@ import com.google.common.eventbus.Subscribe;
 
 public class CashPurchaseEventSubscriber extends EventSubscriber<CashPurchaseEvent> {
 
-    public CashPurchaseEventSubscriber(EventBus eventBus) {
-        super(eventBus);
-    }
 
-    @Override
     @Subscribe
     public void handleEvent(CashPurchaseEvent event) {
         events.add(event);
     }
+
 }

@@ -18,8 +18,7 @@ public class LongProcessSubscriber {
 
     private CountDownLatch doneSignal;
 
-    public LongProcessSubscriber(AsyncEventBus asyncEventBus, CountDownLatch doneSignal) {
-        asyncEventBus.register(this);
+    private LongProcessSubscriber(CountDownLatch doneSignal) {
         this.doneSignal = doneSignal;
     }
 
@@ -44,4 +43,9 @@ public class LongProcessSubscriber {
         }
     }
 
+    public static LongProcessSubscriber instance(AsyncEventBus asyncEventBus, CountDownLatch countDownLatch) {
+        LongProcessSubscriber subscriber = new LongProcessSubscriber(countDownLatch);
+        asyncEventBus.register(subscriber);
+        return subscriber;
+    }
 }

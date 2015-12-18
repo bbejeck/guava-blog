@@ -16,13 +16,22 @@ public abstract class EventSubscriber<T> {
 
     List<T> events = new ArrayList<T>();
 
-    public EventSubscriber(EventBus eventBus) {
-        eventBus.register(this);
-    }
-
-    public abstract void handleEvent(T event);
-
     public List<T> getHandledEvents() {
         return events;
+    }
+
+
+    public static <E extends EventSubscriber> E factory(Class<E> clazz, EventBus eventBus) {
+        E subscriber = null;
+        try {
+            subscriber = clazz.newInstance();
+            eventBus.register(subscriber);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return subscriber;
     }
 }

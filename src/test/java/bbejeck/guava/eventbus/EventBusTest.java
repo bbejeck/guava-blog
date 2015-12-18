@@ -47,10 +47,10 @@ public class EventBusTest {
         deadEventSubscriber = new DeadEventSubscriber();
         eventBus.register(deadEventSubscriber);
         eventPublisher = new EventPublisher(eventBus);
-        cashPurchaseEventSubscriber = new CashPurchaseEventSubscriber(eventBus);
-        creditPurchaseEventSubscriber = new CreditPurchaseEventSubscriber(eventBus);
-        purchaseEventSubscriber = new PurchaseEventSubscriber(eventBus);
-        multiHandlerSubscriber = new MultiHandlerSubscriber(eventBus);
+        cashPurchaseEventSubscriber = EventSubscriber.factory(CashPurchaseEventSubscriber.class, eventBus);
+        creditPurchaseEventSubscriber = EventSubscriber.factory(CreditPurchaseEventSubscriber.class, eventBus);
+        purchaseEventSubscriber = EventSubscriber.factory(PurchaseEventSubscriber.class, eventBus);
+        multiHandlerSubscriber = MultiHandlerSubscriber.instance(eventBus);
     }
 
     @Test
@@ -91,8 +91,8 @@ public class EventBusTest {
     @Test
     public void testUnregisterForEvents() {
         eventBus.unregister(cashPurchaseEventSubscriber);
-        CashPurchaseEventSubscriber cashPurchaseEventSubscriber1 = new CashPurchaseEventSubscriber(eventBus);
-        CashPurchaseEventSubscriber cashPurchaseEventSubscriber2 = new CashPurchaseEventSubscriber(eventBus);
+        CashPurchaseEventSubscriber cashPurchaseEventSubscriber1 = EventSubscriber.factory(CashPurchaseEventSubscriber.class, eventBus);
+        CashPurchaseEventSubscriber cashPurchaseEventSubscriber2 = EventSubscriber.factory(CashPurchaseEventSubscriber.class, eventBus);
         eventBus.register(cashPurchaseEventSubscriber1);
         eventBus.register(cashPurchaseEventSubscriber2);
 
@@ -111,7 +111,7 @@ public class EventBusTest {
     public void testAsyncEventSubscriber() throws Exception {
         asyncEventBus = new AsyncEventBus(Executors.newCachedThreadPool());
         doneSignal = new CountDownLatch(numberLongEvents);
-        longProcessSubscriber = new LongProcessSubscriber(asyncEventBus, doneSignal);
+        longProcessSubscriber = LongProcessSubscriber.instance(asyncEventBus, doneSignal);
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < numberLongEvents; i++) {
@@ -131,7 +131,7 @@ public class EventBusTest {
     public void testNonAsyncEventSubscriber() throws Exception {
         asyncEventBus = new AsyncEventBus(Executors.newCachedThreadPool());
         doneSignal = new CountDownLatch(numberLongEvents);
-        longProcessSubscriber = new LongProcessSubscriber(asyncEventBus, doneSignal);
+        longProcessSubscriber = LongProcessSubscriber.instance(asyncEventBus, doneSignal);
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < numberLongEvents; i++) {
@@ -144,7 +144,7 @@ public class EventBusTest {
 
     @Test
     public void testHandleAllEvents() {
-        allEventSubscriber = new AllEventSubscriber(eventBus);
+        allEventSubscriber = EventSubscriber.factory(AllEventSubscriber.class, eventBus);
         generateAllPurchaseEvents();
         generateSimpleEvent();
         assertThat(allEventSubscriber.getHandledEvents().size(), is(3));
@@ -162,13 +162,13 @@ public class EventBusTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMultipleParametersInHandler() {
-        InvalidSubscriberMultipleParameter invalidSubscriber = new InvalidSubscriberMultipleParameter(eventBus);
+        InvalidSubscriberMultipleParameter invalidSubscriber = InvalidSubscriberMultipleParameter.instance(eventBus);
         generateCreditPurchaseEvent();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNoParametersInHandler() {
-        InvalidSubscriberNoParameters invalidSubscriber = new InvalidSubscriberNoParameters(eventBus);
+        InvalidSubscriberNoParameters invalidSubscriber = InvalidSubscriberNoParameters.instance(eventBus);
         generateCreditPurchaseEvent();
     }
 

@@ -12,12 +12,15 @@ import com.google.common.eventbus.Subscribe;
  */
 public class InvalidSubscriberMultipleParameter {
 
-    public InvalidSubscriberMultipleParameter(EventBus eventBus) {
-        eventBus.register(this);
-    }
 
     @Subscribe
     public void handleCreditEvent(CreditPurchaseEvent event, Object foo) {
         //DO nothing this will not work
+    }
+
+    public static InvalidSubscriberMultipleParameter instance(EventBus eventBus) {
+        InvalidSubscriberMultipleParameter subscriber = new InvalidSubscriberMultipleParameter();
+        eventBus.register(subscriber);
+        return subscriber;
     }
 }

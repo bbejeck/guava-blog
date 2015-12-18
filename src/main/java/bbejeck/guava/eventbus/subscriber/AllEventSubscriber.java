@@ -1,6 +1,5 @@
 package bbejeck.guava.eventbus.subscriber;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 /**
@@ -11,11 +10,7 @@ import com.google.common.eventbus.Subscribe;
  */
 public class AllEventSubscriber extends EventSubscriber<Object> {
 
-    public AllEventSubscriber(EventBus eventBus) {
-        super(eventBus);
-    }
 
-    @Override
     @Subscribe
     public void handleEvent(Object event) {
         events.add(event);

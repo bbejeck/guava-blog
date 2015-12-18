@@ -21,9 +21,6 @@ public class MultiHandlerSubscriber {
     private List<CreditPurchaseEvent> creditEvents = new ArrayList<CreditPurchaseEvent>();
     private List<SimpleEvent> simpleEvents = new ArrayList<SimpleEvent>();
 
-    public MultiHandlerSubscriber(EventBus eventBus) {
-        eventBus.register(this);
-    }
 
     @Subscribe
     public void handleCashEvents(CashPurchaseEvent event) {
@@ -50,5 +47,11 @@ public class MultiHandlerSubscriber {
 
     public List<SimpleEvent> getSimpleEvents() {
         return simpleEvents;
+    }
+
+    public static MultiHandlerSubscriber instance(EventBus eventBus) {
+        MultiHandlerSubscriber subscriber = new MultiHandlerSubscriber();
+        eventBus.register(subscriber);
+        return subscriber;
     }
 }
