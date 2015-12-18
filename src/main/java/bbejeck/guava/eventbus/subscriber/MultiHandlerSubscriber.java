@@ -21,6 +21,8 @@ public class MultiHandlerSubscriber {
     private List<CreditPurchaseEvent> creditEvents = new ArrayList<CreditPurchaseEvent>();
     private List<SimpleEvent> simpleEvents = new ArrayList<SimpleEvent>();
 
+    private MultiHandlerSubscriber() {
+    }
 
     @Subscribe
     public void handleCashEvents(CashPurchaseEvent event) {

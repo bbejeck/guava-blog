@@ -10,6 +10,8 @@ import com.google.common.eventbus.Subscribe;
  */
 public class AllEventSubscriber extends EventSubscriber<Object> {
 
+    private AllEventSubscriber() {
+    }
 
     @Subscribe
     public void handleEvent(Object event) {

@@ -11,6 +11,8 @@ import com.google.common.eventbus.Subscribe;
  */
 public class InvalidSubscriberNoParameters {
 
+    private InvalidSubscriberNoParameters() {
+    }
 
     @Subscribe
     public void handleEvent() {

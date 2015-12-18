@@ -12,6 +12,8 @@ import com.google.common.eventbus.Subscribe;
 
 public class CreditPurchaseEventSubscriber extends EventSubscriber<CreditPurchaseEvent> {
 
+    private CreditPurchaseEventSubscriber() {
+    }
 
     @Subscribe
     public void handleEvent(CreditPurchaseEvent event) {

@@ -13,6 +13,9 @@ import com.google.common.eventbus.Subscribe;
 public class PurchaseEventSubscriber extends EventSubscriber<PurchaseEvent> {
 
 
+    private PurchaseEventSubscriber() {
+    }
+
     @Subscribe
     public void handleEvent(PurchaseEvent event) {
         events.add(event);
